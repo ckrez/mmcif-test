@@ -6,6 +6,7 @@ from minemeld.ft.basepoller import BasePollerFT
 from time import sleep
 import json
 from base64 import b64decode
+import yaml
 
 LOG = logging.getLogger(__name__)
 
@@ -24,45 +25,57 @@ class Miner(BasePollerFT):
         self.verify_cert = self.config.get('verify_cert', True)
         self.initial_days = self.config.get('initial_days', 7)
         self.prefix = self.config.get('prefix', 'cifv3')
-
         self.remote = self.config.get('remote', None)
-        if self.remote is None:
-            raise ValueError('{} - remote api is required'.format(self.name))
-
         self.token = self.config.get('token', None)
-        if self.token is None:
-            raise ValueError('{} - remote api is required'.format(self.name))
-
         self.filters = self.config.get('filters', None)
-        if self.filters is None:
-            raise ValueError('{} - feed filters are required'.format(self.name))
-
         self.fields = ['tlp', 'group', 'reporttime', 'indicator', 'firsttime', 'lasttime', 'count', 'tags',
                        'description', 'confidence', 'rdata', 'provider']
+
+    def _load_side_config(self):
+        try:
+            with open(self.side_config_path, 'r') as f:
+                sconfig = yaml.safe_load(f)
+
+        except Exception as e:
+            LOG.error('{} - Error loading side config: {}'.format(self.name, str(e)))
+            return
+
+        self.token = sconfig.get('token', None)
+        if self.token is not None:
+            LOG.info('{} - token set'.format(self.name))
+
+        self.remote = sconfig.get('remote', self.remote)
+        self.verify_cert = sconfig.get('verify_cert', self.verify_cert)
+        filters = sconfig.get('filters', self.filters)
+        if filters is not None:
+            if self.filters is not None:
+                self.filters.update(filters)
+            else:
+                self.filters = filters
 
     def _check_status(self, resp, expect=200):
         if resp.status_code == 400:
             r = json.loads(resp.text)
-            raise InvalidSearch(r['message'])
+            raise RuntimeError(r['message'])
 
         if resp.status_code == 401:
-            raise AuthError('unauthorized')
+            raise RuntimeError('unauthorized')
 
         if resp.status_code == 404:
-            raise NotFound('not found')
+            raise RuntimeError('not found')
 
         if resp.status_code == 408:
-            raise TimeoutError('timeout')
+            raise RuntimeError('timeout')
 
         if resp.status_code == 422:
             msg = json.loads(resp.text)
-            raise SubmissionFailed(msg['message'])
+            raise RuntimeError(msg['message'])
 
         if resp.status_code == 429:
-            raise CIFBusy('RateLimit exceeded')
+            raise RuntimeError('RateLimit exceeded')
 
         if resp.status_code in [500, 501, 502, 503, 504]:
-            raise CIFBusy('system seems busy..')
+            raise RuntimeError('system seems busy..')
 
         if resp.status_code != expect:
             msg = 'unknown: %s' % resp.content
@@ -108,6 +121,15 @@ class Miner(BasePollerFT):
         return [[indicator, a]]
 
     def _build_iterator(self, now):
+
+        if self.remote is None:
+            raise RuntimeError('{} - remote api is required'.format(self.name))
+
+        if self.token is None:
+            raise RuntimeError('{} - remote api is required'.format(self.name))
+
+        if self.filters is None:
+            raise RuntimeError('{} - feed filters are required'.format(self.name))
 
         LOG.debug('{} - filters: {}'.format(self.name, self.filters))
 
