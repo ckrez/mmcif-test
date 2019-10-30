@@ -31,6 +31,8 @@ class Miner(BasePollerFT):
         self.fields = ['tlp', 'group', 'reporttime', 'indicator', 'firsttime', 'lasttime', 'count', 'tags',
                        'description', 'confidence', 'rdata', 'provider']
 
+        self._load_side_config()
+
     def _load_side_config(self):
         try:
             with open(self.side_config_path, 'r') as f:
@@ -201,4 +203,4 @@ class Miner(BasePollerFT):
                         m['message'] = b64decode(m['message'])
                     except Exception as e:
                         pass
-        return msgs
+        return msgs['data']
