@@ -6,7 +6,7 @@
     "description": "MineMeld extension for CIFv3",
     "entry_points": {
         "minemeld_webui": {
-            "cifv3.Webui": "cifv3:webui_blueprint"
+            "cifv3Webui": "cifv3:webui_blueprint"
         },
         "minemeld_nodes": {
             "cifv3.Miner": "cifv3.node:Miner"
