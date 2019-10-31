@@ -146,6 +146,29 @@ function CIFv3SideConfigController($scope, MinemeldConfigService, MineMeldRunnin
         });
     };
 
+    vm.setFilters = function() {
+        var mi = $modal.open({
+            templateUrl: '/extensions/webui/cifv3Webui/cifv3.miner.sfilters.modal.html',
+            controller: ['$modalInstance', CIFv3FiltersController],
+            controllerAs: 'vm',
+            bindToController: true,
+            backdrop: 'static',
+            animation: false
+        });
+
+        mi.result.then((result) => {
+            this.filters = result.filters;
+
+            return vm.saveSideConfig();
+        })
+        .then((result) => {
+            toastr.success('FILTERS SET');
+            vm.loadSideConfig();
+        }, (error) => {
+            toastr.error('ERROR SETTING FILTERS: ' + error.statusText);
+        });
+    };
+
     vm.loadSideConfig();
 }
 
@@ -187,6 +210,53 @@ function CIFv3TokenController($modalInstance, token) {
         angular.element('#token').removeClass('has-error');
 
         if (!vm.token) {
+            return false;
+        }
+
+        return true;
+    };
+
+    vm.save = function() {
+        var result = {};
+
+        result.token = vm.token;
+
+        $modalInstance.close(result);
+    }
+
+    vm.cancel = function() {
+        $modalInstance.dismiss();
+    }
+}
+
+function CIFv3FiltersController($modalInstance, filters) {
+    var vm = this;
+
+    vm.filters = filters;
+
+    itypes: string = [
+        'ipv4',
+        'ipv6',
+        'fqdn',
+        'url'
+    ];
+
+    defaultTags: string = [
+        'whitelist',
+        'spam',
+        'malware',
+        'scanner',
+        'hijacked',
+        'honeypot',
+        'botnet',
+        'exploit',
+        'phishing'
+    ];
+
+    vm.valid = function() {
+        //angular.element('#filters').removeClass('has-error');
+
+        if (!vm.filters) {
             return false;
         }
 

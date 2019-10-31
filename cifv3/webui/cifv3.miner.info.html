@@ -95,17 +95,17 @@
             </colgroup>
             <tbody>
                 <tr>
-                    <td>KEY</td>
-                    <td tooltip="set key" class="nodedetail-info-clickable" ng-click="sideConfig.setToken()">
-                        <span ng-if="!sideConfig.token"><em>Not set</em></span>
-                        <span ng-if="sideConfig.token" class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>URL</td>
+                    <td>REMOTE</td>
                     <td tooltip="set url" class="nodedetail-info-clickable" ng-click="sideConfig.setRemote()">
                         <span ng-if="!sideConfig.remote"><em>Not set</em></span>
                         <span ng-if="sideConfig.remote">{{ sideConfig.remote }}</span>
+                    </td>
+                </tr>
+               <tr>
+                    <td>TOKEN</td>
+                    <td tooltip="set key" class="nodedetail-info-clickable" ng-click="sideConfig.setToken()">
+                        <span ng-if="!sideConfig.token"><em>Not set</em></span>
+                        <span ng-if="sideConfig.token" class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span>
                     </td>
                 </tr>
                 <tr>
@@ -114,6 +114,13 @@
                         <span ng-if="sideConfig.verify_cert === undefined"><em>Not set (default enabled)</em></span>
                         <span ng-if="sideConfig.verify_cert !== undefined && !sideConfig.verify_cert" class="label label-default"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>
                         <span ng-if="sideConfig.verify_cert" class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>FILTERS</td>
+                    <td tooltip="set feed filters" class="nodedetail-info-clickable" ng-click="sideConfig.setFilters()">
+                        <span ng-if="sideConfig.flattenedFilters === undefined"><em>Not set</span></span>
+                        <span ng-if="sideConfig.flattenedFilters">{{ sideConfig.flattenedFilters }}</span>
                     </td>
                 </tr>
             </tbody>
