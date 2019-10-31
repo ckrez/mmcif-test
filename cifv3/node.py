@@ -31,6 +31,13 @@ class Miner(BasePollerFT):
         self.fields = ['tlp', 'group', 'reporttime', 'indicator', 'firsttime', 'lasttime', 'count', 'tags',
                        'description', 'confidence', 'rdata', 'provider']
 
+        self.side_config_path = self.config.get('side_config', None)
+        if self.side_config_path is None:
+            self.side_config_path = os.path.join(
+                os.environ['MM_CONFIG_DIR'],
+                '%s_side_config.yml' % self.name
+            )
+
         self._load_side_config()
 
     def _load_side_config(self):
