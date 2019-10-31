@@ -7,6 +7,7 @@ from time import sleep
 import json
 from base64 import b64decode
 import yaml
+import os
 
 LOG = logging.getLogger(__name__)
 
