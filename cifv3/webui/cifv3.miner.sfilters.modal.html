@@ -7,15 +7,15 @@
             <div class="form-group" id="fgOtype">
                 <label class="col-xs-4 control-label">ITYPE</label>
                 <div class="col-xs-6">
-                    <ui-select ng-model="vm.otype"
+                    <ui-select ng-model="vm.itype"
                                theme="bootstrap"
                                reset-search-input="false"
                                style="width: 100%;"
                                on-select="vm.changed = true"
                                on-remove="vm.changed = true">
                         <ui-select-match placeholder="Not set">{{$select.selected}}</ui-select-match>
-                        <ui-select-choices repeat="otype in vm.itypes | filter: $select.search">
-                            <span ng-bind-html="otype | highlight: $select.search"></span>
+                        <ui-select-choices repeat="itype in vm.itypes | filter: $select.search">
+                            <span ng-bind-html="itype | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                 </div>
