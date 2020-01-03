@@ -26,7 +26,7 @@ prototypes:
         confidence: null
       # age out of indicators
       age_out:
-        sudden_death: false
+        sudden_death: true
         default: last_seen+30d
         interval: 3307
       attributes:
