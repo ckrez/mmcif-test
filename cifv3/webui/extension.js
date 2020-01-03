@@ -77,19 +77,22 @@ function CIFv3SideConfigController($scope, MinemeldConfigService, MineMeldRunnin
             controllerAs: 'vm',
             bindToController: true,
             backdrop: 'static',
-            animation: false
+            animation: false,
+            resolve: {
+                remote: () => { return this.remote; }
+            }
         });
 
         mi.result.then((result) => {
-            vm.url = result.url;
+            vm.remote = result.remote;
 
             return vm.saveSideConfig();
         })
         .then(() => {
-            toastr.success('URL SET');
+            toastr.success('REMOTE SET');
             vm.loadSideConfig();
         }, (error) => {
-            toastr.error('ERROR SETTING URL: ' + error.statusText);
+            toastr.error('ERROR SETTING REMOTE: ' + error.statusText);
         });
     };
 
@@ -153,7 +156,10 @@ function CIFv3SideConfigController($scope, MinemeldConfigService, MineMeldRunnin
             controllerAs: 'vm',
             bindToController: true,
             backdrop: 'static',
-            animation: false
+            animation: false,
+            resolve: {
+                filters: () => { return this.filters; }
+            }
         });
 
         mi.result.then((result) => {
